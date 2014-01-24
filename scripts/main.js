@@ -52,7 +52,7 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
                 .sort(null)
                 .value(function (d) { return 100 * (d.doc_count/total); });
 
-            var svg = d3.select("#pie-chart").append("svg")
+            var svg = d3.select("#donut-chart").append("svg")
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
