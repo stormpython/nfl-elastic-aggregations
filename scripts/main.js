@@ -37,7 +37,7 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
             var touchdowns = resp.aggregations.touchdowns.buckets,
                 total = resp.hits.total;
 
-            // d3 pie chart
+            // d3 donut chart
             var width = 960,
                 height = 500,
                 radius = Math.min(width, height) / 2;
