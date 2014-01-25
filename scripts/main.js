@@ -166,11 +166,9 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
         d3.select(self.frameElement).style("height", height + "px");
 
         function createChildNodes(dataObj) {
-            var root = {
-                "name": "nfl",
-                "children": dataObj.aggregations.teams.buckets
-            };
-
+            var root = {};
+	    root.name = "nfl";
+	    root.children = dataObj.aggregations.teams.buckets;
             root.children.forEach(function (d) { d.children = d.players.buckets; });
             root.children.forEach(function (d) { d.children.forEach(function (d) { d.children = d.qtrs.buckets; }) });
 
