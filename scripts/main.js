@@ -185,7 +185,7 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
             .attr("dx", function(d) { return d.children ? -8 : 8; })
             .attr("dy", 3)
             .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
-            .text(function(d) { return d.children? d.key : d.key + ": " + d.doc_count; });
+            .text(function(d) { return d.children? d.key.toUpperCase() : d.key + ": " + d.doc_count; });
 
         d3.select(self.frameElement).style("height", height + "px");
 
