@@ -24,7 +24,8 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
             aggs: {
                 touchdowns: {
                     terms: {
-                        field: "qtr"
+                        field: "qtr",
+                        order: { "_term" : "asc" }
                     }
                 }
             }
@@ -112,7 +113,8 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
                             aggs: {
                                 qtrs: {
                                     terms: {
-                                        field: "qtr"
+                                        field: "qtr",
+                                        order: { "_term": "asc" }
                                     }
                                 }
                             }
@@ -183,19 +185,13 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
             .attr("dx", function(d) { return d.children ? -8 : 8; })
             .attr("dy", 3)
             .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
-            .text(function(d,i) { 
-                if (i == 0) {
-                    return "TOP 200";
-                } else {
-                    return d.key + ": " + d.doc_count;
-                }
-            });
+            .text(function(d) { return d.children? d.key : d.key + ": " + d.doc_count; });
 
         d3.select(self.frameElement).style("height", height + "px");
 
         function createChildNodes(dataObj) {
             var root = {};
-	        root.name = "nfl";
+	        root.key = "NFL";
 	        root.children = dataObj.aggregations.teams.buckets;
             root.children.forEach(function (d) { d.children = d.players.buckets; });
             root.children.forEach(function (d) { d.children.forEach(function (d) { d.children = d.qtrs.buckets; }) });
