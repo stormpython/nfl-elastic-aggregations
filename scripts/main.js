@@ -38,15 +38,16 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
                 total = resp.hits.total;
 
             // d3 donut chart
-            var width = 960,
-                height = 500,
+            var width = 600,
+                height = 300,
                 radius = Math.min(width, height) / 2;
 
-            var color = d3.scale.category10()
+            // var color = d3.scale.category10();
+            var color = ['#ff7f0e', '#d62728', '#2ca02c', '#1f77b4'];
 
             var arc = d3.svg.arc()
-                .outerRadius(radius - 10)
-                .innerRadius(80);
+                .outerRadius(radius - 60)
+                .innerRadius(120);
 
             var pie = d3.layout.pie()
                 .sort(null)
@@ -56,7 +57,7 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
-                .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
+                .attr("transform", "translate(" + width/1.4 + "," + height/2 + ")");
 
             var g = svg.selectAll(".arc")
                 .data(pie(touchdowns))
@@ -66,7 +67,10 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
 
             g.append("path")
                 .attr("d", arc)
-                .style("fill", function (d, i) { return color(d.data.key); });
+                .style("fill", function (d) { 
+                    // return color(d.data.key); 
+                    return color[d.data.key-1]; 
+                });
 
             g.append("text")
                 .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
@@ -124,20 +128,23 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
         var root = createChildNodes(resp);
 
         // d3 dendrogram
-        var width = 960,
-            height = 2200;
+        var width = 600,
+            height = 2000;
+
+        // var color = d3.scale.category10();
+        var color = ['#ff7f0e', '#d62728', '#2ca02c', '#1f77b4'];
 
         var cluster = d3.layout.cluster()
-            .size([height, width - 160]);
+            .size([height, width - 200]);
 
         var diagonal = d3.svg.diagonal()
             .projection(function(d) { return [d.y, d.x]; });
 
-        var svg = d3.select("body").append("svg")
+        var svg = d3.select("#dendrogram").append("svg")
             .attr("width", width)
             .attr("height", height)
             .append("g")
-            .attr("transform", "translate(40,0)");
+            .attr("transform", "translate(120,0)");
 
         var nodes = cluster.nodes(root),
             links = cluster.links(nodes);
@@ -155,23 +162,43 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
             .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
 
         node.append("circle")
-            .attr("r", 4.5);
+            .attr("r", 4.5)
+            .style("fill", function (d) { 
+                var col = "#ffffff";
+                if (+d.key > 0) {
+                    col = color[d.key-1];
+                }
+                return col; 
+            })
+            .style("stroke", function (d) { 
+                var col = "#4682B4";
+                if (+d.key > 0) {
+                    col = color[d.key-1];
+                }
+                return col; 
+            });
+
 
         node.append("text")
             .attr("dx", function(d) { return d.children ? -8 : 8; })
             .attr("dy", 3)
             .style("text-anchor", function(d) { return d.children ? "end" : "start"; })
-            .text(function(d) { return d.key + ": " + d.doc_count; });
+            .text(function(d,i) { 
+                if (i == 0) {
+                    return "TOP 200";
+                } else {
+                    return d.key + ": " + d.doc_count;
+                }
+            });
 
         d3.select(self.frameElement).style("height", height + "px");
 
         function createChildNodes(dataObj) {
             var root = {};
-	    root.name = "nfl";
-	    root.children = dataObj.aggregations.teams.buckets;
+	        root.name = "nfl";
+	        root.children = dataObj.aggregations.teams.buckets;
             root.children.forEach(function (d) { d.children = d.players.buckets; });
             root.children.forEach(function (d) { d.children.forEach(function (d) { d.children = d.qtrs.buckets; }) });
-
             return root;
         }
     });
