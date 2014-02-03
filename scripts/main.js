@@ -178,7 +178,6 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
                 return col; 
             });
 
-
         node.append("text")
             .attr("dx", function(d) { return d.children ? -8 : 8; })
             .attr("dy", 3)
