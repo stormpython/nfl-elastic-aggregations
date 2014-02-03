@@ -123,7 +123,7 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
             }
         }
     }).then(function (resp) {
-        console.log(resp)
+        console.log(resp);
 
         // D3 code goes here.
         var root = createChildNodes(resp);
@@ -159,7 +159,7 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
             .data(nodes)
             .enter().append("g")
             .attr("class", "node")
-            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
         node.append("circle")
             .attr("r", 4.5)
@@ -193,7 +193,11 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
             root.key = "NFL";
             root.children = dataObj.aggregations.teams.buckets;
             root.children.forEach(function (d) { d.children = d.players.buckets; });
-            root.children.forEach(function (d) { d.children.forEach(function (d) { d.children = d.qtrs.buckets; }) });
+            root.children.forEach(function (d) {
+                d.children.forEach(function (d) {
+                    d.children = d.qtrs.buckets;
+                })
+            });
 
             return root;
         }
