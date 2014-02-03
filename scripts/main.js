@@ -191,8 +191,8 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
 
         function createChildNodes(dataObj) {
             var root = {};
-	        root.key = "NFL";
-	        root.children = dataObj.aggregations.teams.buckets;
+            root.key = "NFL";
+            root.children = dataObj.aggregations.teams.buckets;
             root.children.forEach(function (d) { d.children = d.players.buckets; });
             root.children.forEach(function (d) { d.children.forEach(function (d) { d.children = d.qtrs.buckets; }) });
             return root;
