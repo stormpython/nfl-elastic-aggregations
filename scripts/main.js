@@ -43,7 +43,6 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
                 height = 300,
                 radius = Math.min(width, height) / 2;
 
-            // var color = d3.scale.category10();
             var color = ['#ff7f0e', '#d62728', '#2ca02c', '#1f77b4'];
 
             var arc = d3.svg.arc()
@@ -133,7 +132,6 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
         var width = 600,
             height = 2000;
 
-        // var color = d3.scale.category10();
         var color = ['#ff7f0e', '#d62728', '#2ca02c', '#1f77b4'];
 
         var cluster = d3.layout.cluster()
@@ -191,10 +189,12 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
 
         function createChildNodes(dataObj) {
             var root = {};
-	        root.key = "NFL";
-	        root.children = dataObj.aggregations.teams.buckets;
+
+            root.key = "NFL";
+            root.children = dataObj.aggregations.teams.buckets;
             root.children.forEach(function (d) { d.children = d.players.buckets; });
             root.children.forEach(function (d) { d.children.forEach(function (d) { d.children = d.qtrs.buckets; }) });
+
             return root;
         }
     });
