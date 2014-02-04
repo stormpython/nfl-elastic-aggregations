@@ -10,7 +10,7 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
 
     client.search({
         index: 'nfl',
-        size: 200,
+        size: 5,
         body: {
             // Begin query.
             query: {
