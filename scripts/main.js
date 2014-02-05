@@ -68,7 +68,6 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
             g.append("path")
                 .attr("d", arc)
                 .style("fill", function (d) { 
-                    // return color(d.data.key); 
                     return color[d.data.key-1]; 
                 });
 
