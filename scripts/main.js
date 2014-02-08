@@ -35,8 +35,7 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
             console.log(resp);
 
             // D3 code goes here.
-            var touchdowns = resp.aggregations.touchdowns.buckets,
-                total = resp.hits.total;
+            var touchdowns = resp.aggregations.touchdowns.buckets;
 
             // d3 donut chart
             var width = 600,
@@ -51,7 +50,7 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
 
             var pie = d3.layout.pie()
                 .sort(null)
-                .value(function (d) { return 100 * (d.doc_count/total); });
+                .value(function (d) { return d.doc_count; });
 
             var svg = d3.select("#donut-chart").append("svg")
                 .attr("width", width)
@@ -67,8 +66,8 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
 
             g.append("path")
                 .attr("d", arc)
-                .style("fill", function (d) { 
-                    return color[d.data.key-1]; 
+                .style("fill", function (d, i) {
+                    return color[i];
                 });
 
             g.append("text")
@@ -162,19 +161,11 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
 
         node.append("circle")
             .attr("r", 4.5)
-            .style("fill", function (d) { 
-                var col = "#ffffff";
-                if (+d.key > 0) {
-                    col = color[d.key-1];
-                }
-                return col; 
+            .style("fill", function (d) {
+                return d.children ? "#ffffff" : color[+d.key - 1];
             })
-            .style("stroke", function (d) { 
-                var col = "#4682B4";
-                if (+d.key > 0) {
-                    col = color[d.key-1];
-                }
-                return col; 
+            .style("stroke", function (d) {
+                return d.children ? "#4682B4" : color[+d.key - 1];
             });
 
         node.append("text")
@@ -194,7 +185,7 @@ define(['scripts/d3.v3', 'scripts/elasticsearch'], function (d3, elasticsearch) 
             root.children.forEach(function (d) {
                 d.children.forEach(function (d) {
                     d.children = d.qtrs.buckets;
-                })
+                });
             });
 
             return root;
